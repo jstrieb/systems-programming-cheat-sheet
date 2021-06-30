@@ -1,0 +1,292 @@
+%\documentclass{article}
+\documentclass[twocolumn]{article}
+
+% Formatting
+\usepackage[letterpaper, margin=0.5in]{geometry}
+\usepackage{microtype}
+\usepackage{titlesec}
+\pagenumbering{gobble}
+
+% Sections with no numbers and minimal vertical spacing
+\titleformat{\section}{\normalfont\Large\bfseries}{}{0pt}{}[\vspace{-8pt}]
+
+% Misc. Imports
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{multicol}
+
+% Document title and metadata
+\usepackage[pdftex,
+    pdfauthor={Jacob Strieb},
+    pdftitle={15-213 Exam 1 Cheat Sheet}]{hyperref}
+
+% Custom commands
+\renewcommand{\tt}[1]{\texttt{#1}}
+
+\begin{document}
+
+\section{Integers}
+\begin{tabular}{| c || c | c | c ||| c | c |}
+    \hline
+    $n$ & $2^n$ & Hex & Binary & $n$ & $2^n$\\
+    \hline \hline
+    0  & 1     & \tt{0x00} & 00000 & 17 & 131072 \\
+    \hline
+    1  & 2     & \tt{0x01} & 00001 & 18 & 262144 \\
+    \hline
+    2  & 4     & \tt{0x02} & 00010 & 19 & 524288 \\
+    \hline
+    3  & 8     & \tt{0x03} & 00011 & 20 & 1048576 \\
+    \hline
+    4  & 16    & \tt{0x04} & 00100 & 21 & 2097152 \\
+    \hline
+    5  & 32    & \tt{0x05} & 00101 & 22 & 4194304 \\
+    \hline
+    6  & 64    & \tt{0x06} & 00110 & 23 & 8388608 \\
+    \hline
+    7  & 128   & \tt{0x07} & 00111 & 24 & 16777216 \\
+    \hline
+    8  & 256   & \tt{0x08} & 01000 & 25 & 33554432 \\
+    \hline
+    9  & 512   & \tt{0x09} & 01001 & 26 & 67108864 \\
+    \hline
+    10 & 1024  & \tt{0x0A} & 01010 & 27 & 134217728 \\
+    \hline
+    11 & 2048  & \tt{0x0B} & 01011 & 28 & 268435456 \\
+    \hline
+    12 & 4096  & \tt{0x0C} & 01100 & 29 & 536870912 \\
+    \hline
+    13 & 8192  & \tt{0x0D} & 01101 & 30 & 1073741824 \\
+    \hline
+    14 & 16384 & \tt{0x0E} & 01110 & 31 & 2147483648 \\
+    \hline
+    15 & 32768 & \tt{0x0F} & 01111 & 32 & 4294967296 \\
+    \hline
+    16 & 65536 & \tt{0x10} & 10000 & 33 & 8589934592 \\
+    \hline
+\end{tabular}
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Word size} -- nominal size of pointer data
+    \item Addresses go up to $2^w - 1$ for $w$-bit word size
+    \item \textbf{Little Endian} -- least significant byte comes first
+    \item \textbf{Big Endian} -- most significant byte comes first
+    \item Storing \tt{0x1234567} at \tt{0x100} \\
+    \begin{tabular}{| r || c | c | c | c |}
+        \hline
+                      & \tt{0x100} & \tt{0x101} & \tt{0x102} & \tt{0x103} \\ \hline
+        Big endian    & \tt{01}    & \tt{23}    & \tt{45}    & \tt{67}    \\ \hline
+        Little endian & \tt{67}    & \tt{45}    & \tt{23}    & \tt{01}    \\ \hline
+    \end{tabular} \\
+    \item Arithmetic between signed and unsigned values automatically casts all signed values to unsigned
+    \item $-TMin_w = TMin_w$
+    \item $\lceil x/2^k \rceil$ is given by \tt{(x + (1 << k) - 1) >> k}
+    \item $x/2^k$ is given by \tt{(x<0 ? x+(1<<k)-1 : x) >> k}
+\end{itemize}
+
+\begin{tabular}{| c || c | c | c |}
+    \hline
+    & \multicolumn{3}{c|}{Word size $w$} \\ \cline{2-4}
+    Value & 8 & 16 & 32 \\ \hline
+    $UMax_w$ & \tt{0xFF} & \tt{0xFFFF} & \tt{0xFFFFFFFF} \\
+    & 255 & 65,535 & 4,294,967,295 \\ \hline
+    $TMin_w$ & \tt{0x80} & \tt{0x8000} & \tt{0x80000000} \\
+    & $-128$ & $-32,768$ & $-2,147,483,648$ \\ \hline
+    $TMax_w$ & \tt{0x7F} & \tt{0x7FFF} & \tt{0x7FFFFFFF} \\
+    & $127$ & $32,767$ & $2,147,483,647$ \\ \hline
+    $-1$ & \tt{0xFF} & \tt{0xFFFF} & \tt{0xFFFFFFFF} \\ \hline
+\end{tabular}
+
+\vfill
+\pagebreak
+
+\section{Floating Point}
+\begin{itemize}[noitemsep]
+    \item Floating point lacks associativity
+    \item $V = (-1)^s \times M \times 2^E$
+    \item Sign bit $s$ -- whether the number is positive or negative, represented by 1-bit field
+    \item Exponent $E$ weights the value by a possibly negative power of 2, represented by $k$-bit \tt{exp} field
+    \item Significand (mantissa) $M$ -- fractional binary number between 1 and $2 - \varepsilon$ or between 0 and $1 - \varepsilon$, represented by $n$-bit \tt{frac} field ($f_{n - 1}\cdots f_1 f_0$)
+    \item Normalized values
+    \begin{itemize}[noitemsep]
+        \item Most common case
+        \item \tt{exp} is neither all zeros nor all ones
+        \item Exponent field represents biased signed integer
+        \item $E = e - $Bias where $e$ is the unsigned number in \tt{exp} and Bias $= 2^{k - 1} - 1$
+        \item \tt{frac} represents $0 \leq f < 1$ with $0.f_{n - 1}\cdots f_1 f_0$ and $M = 1 + f$ -- implied leading 1
+    \end{itemize}
+    \item Denormalized values
+    \begin{itemize}[noitemsep]
+        \item Exponent field all zeros
+        \item Exponent value is $E = 1 - $Bias, significand value is $M = f$ (no leading 1)
+        \item Numbers close to zero (inclusive), evenly spaced near 0.0
+    \end{itemize}
+    \item Special values
+    \begin{itemize}[noitemsep]
+        \item Exponent field is all ones
+        \item Fraction field all zeros can represent $\pm \infty$, depending on sign bit
+        \item Nonzero fraction field is NaN
+    \end{itemize}
+    \item Rounding
+    \begin{itemize}[noitemsep]
+        \item Rounds to the nearest even
+        \item \tt{BBGRXXX}
+        \item \tt{G} -- Guard bit; least significant bit of result
+        \item \tt{R} -- Round bit; first bit removed
+        \item \tt{XXXX} -- Sticky bit; OR of remaining bits
+        \item Round up conditions:
+        \begin{itemize}[noitemsep]
+            \item Round = 1, Sticky = 1 $\to > 0.5$
+            \item Guard = 1, Round = 1, Sticky = 0 $\to$ Round to even
+        \end{itemize}
+    \end{itemize}
+    \item Multiplication
+    \begin{itemize}[noitemsep]
+        \item $(-1)^{s_1}M_12^{E_1} \times (-1)^{s_2}M_22^{E_2} = (-1)^{s_1 \string^ s_2}(M_1 \times M_2)2^{E_1 + E_2}$
+        \item If $M_1 \times M_2 = M \geq 2$ shift $M$ right, increment $E = E_1 + E_2$
+        \item If $E$ out of range, overflow
+        \item Round $M$ to fit \tt{frac} precision
+    \end{itemize}
+\end{itemize}
+% TODO: Add table here from page 116
+
+\section{Bitwise Operations}
+\begin{itemize}[noitemsep]
+    \item \textbf{Arithmetic shift} -- Fills left end with zeros
+    \item \textbf{Logical shift} -- Sign-extends left end
+\end{itemize}
+
+\begin{multicols}{4}
+    \begin{tabular}{r | c}
+        \tt{\~} & \\ \hline
+        0 & 1 \\
+        1 & 0
+    \end{tabular}
+    \begin{tabular}{r | c c}
+        \tt{\&} & 0 & 1 \\ \hline
+        0 & 0 & 0 \\
+        1 & 0 & 1
+    \end{tabular}
+    \begin{tabular}{r | c c}
+        \tt{|} & 0 & 1 \\ \hline
+        0 & 0 & 1 \\
+        1 & 1 & 1
+    \end{tabular}
+    \begin{tabular}{r | c c}
+        \tt{\^} & 0 & 1 \\ \hline
+        0 & 0 & 1 \\
+        1 & 1 & 0
+    \end{tabular}
+\end{multicols}
+
+\vfill
+\pagebreak
+
+\section{x86-64 Data Alignment}
+\begin{itemize}[noitemsep]
+    \item Internal padding -- added between struct elements
+    \item External padding -- added after struct elements
+    \item The entire struct is externally padded to align to its largest element
+\end{itemize}
+
+\begin{tabular}{| c || c |} \hline
+    $K$ & Types \\ \hline
+    1 & \tt{char} \\ \hline
+    2 & \tt{short} \\ \hline
+    4 & \tt{int, float} \\ \hline
+    8 & \tt{long, double, char *} \\ \hline
+\end{tabular}
+
+\vfill
+%\pagebreak
+
+\section{Caches}
+\begin{itemize}[noitemsep]
+    \item $M = 2^m$ unqiue addresses of $m$ bits
+    \item $S = 2^s$ cache sets
+    \item Each set consists of $E$ cache lines
+    \item Each line consists of a data block of $B = 2^b$ bytes, a valid bit and $t = m - (b + s)$ tag bits 
+    \item Capacity of a cache is $C = S \times E \times B$
+    \item Address \\
+    
+    \begin{tabular}{| c | c | c |}
+        $t$ bits & $s$ bits & $b$ bits \\ \hline
+        $\leftarrow m - 1$ && $0 \rightarrow$ \\ \hline
+        Tag & Set index & Block offset
+    \end{tabular} \\
+    \item Direct-mapped cache has one line per set ($E = 1$)
+    \item Non direct caches sometimes referred to as $E$-way set associative cache
+\end{itemize}
+
+\section{Conditional Control}
+\begin{itemize}[noitemsep]
+    \item Carry flag (\tt{CF}) -- most recent op generated carry of most significant bit, detects overflow for unsigned
+    \item Zero flag (\tt{ZF}) -- most recent op yielded zero
+    \item Sign flag (\tt{SF}) -- most recent op yielded negative value
+    \item Overflow flag (\tt{OF}) -- most recent op caused two's complement overflow
+    \item \tt{test} instruction behaves like \tt{and} instructions but sets condition codes without altering source or destination often see \tt{testq \%rax,\%rax} to check if return val is neg, zero, or pos
+\end{itemize}
+
+\tt{set D} and \tt{jmp} suffixes \\
+\begin{tabular}{| c || c | c | c |}
+    \hline
+    \textbf{Instruction} & \textbf{Syn.} & \textbf{Cond.} & \textbf{Desc.} \\ \hline
+    \tt{-e} & \tt{-z} & \verb|ZF| & $=/0$ \\ \hline
+    \tt{-ne} & \tt{-nz} & \verb|~ZF| & $!=$/not zero \\ \hline
+    \tt{-s} &  & \verb|SF| & Neg \\ \hline
+    \tt{-ns} &  & \verb|~SF| & Nonneg \\ \hline
+    \tt{-g} & \tt{-nle} & \verb|~(SF^OF)&~ZF| & signed $>$ \\ \hline
+    \tt{-ge} & \tt{-nl} & \verb|~(SF^OF)| & signed $=>$ \\ \hline
+    \tt{-l} & \tt{-nge} & \verb|SF^OF| & signed $<$ \\ \hline
+    \tt{-le} & \tt{-ng} & \verb=(SF^OF)|ZF= & signed $<=$ \\ \hline
+    \tt{-a} & \tt{-nbe} & \verb|~CF&~ZF| & unsigned $>$ \\ \hline
+    \tt{-ae} & \tt{-nb} & \verb|~CF| & unsigned $>=$ \\ \hline
+    \tt{-b} & \tt{-nae} & \verb|CF| & unsigned $<$ \\ \hline
+    \tt{-be} & \tt{-na} & \verb=CF|ZF= & unsigned $<=$ \\ \hline
+\end{tabular}
+
+\vfill
+\pagebreak
+
+\section{Assembly Basics}
+\begin{itemize}[noitemsep]
+    \item ``word'' refers to 16-bit data type, with ``double word'' referring to 32-bit (int) and 64-bit quantities referred to as ``quad words''
+    \item On 64-bit machines pointers are 8-byte quad words
+    \item 16 general purpose registers storing 64-bit values (register file)
+    \item In operands, scaling factor $s$ must be either 1, 2, 4, or 8
+    \item \tt{mov S, D} has the effect of $S \to D$
+    \item \tt{movzbq} moves from byte to quad with zero-extended whereas \tt{movsbq} does the same but sign-extended
+    \item Stack grows down if increasing addresses grow up -- ``top'' of the stack at the bottom
+    \item \tt{leaq S, D} has the effect of $\&S \to D$
+\end{itemize}
+
+\begin{tabular}{| c || c | c |}
+    \hline
+    \textbf{Type} & \textbf{Form} & \textbf{Operand value} \\ \hline
+    Immediate & $\$Imm$ & $Imm$ \\ \hline
+    Register & $r_a$ & $R[r_a]$ \\ \hline
+    Memory & $Imm(r_b, r_i, s)$ & M[$Imm + R[r_b] + R[r_i] \cdot s$] \\ \hline
+\end{tabular} \\ \ \\
+
+\begin{tabular}{| c || c | c | c | c |}
+    \hline
+    \textbf{Type} & \textbf{64-bits} & \textbf{32-bits} & \textbf{16-bits} & \textbf{8-bits} \\ \hline
+    Return val & \tt{\%rax}  & \tt{\%eax}  & \tt{\%ax}  & \tt{\%al} \\ \hline
+    Callee & \tt{\%rbx}  & \tt{\%ebx}  & \tt{\%bx}  & \tt{\%bl} \\ \hline
+    1st arg & \tt{\%rdi}  & \tt{\%edi}  & \tt{\%di}  & \tt{\%dil} \\ \hline
+    2nd arg & \tt{\%rsi}  & \tt{\%esi}  & \tt{\%si}  & \tt{\%sil} \\ \hline
+    3rd arg & \tt{\%rdx}  & \tt{\%edx}  & \tt{\%dx}  & \tt{\%dl} \\ \hline
+    4th arg & \tt{\%rcx}  & \tt{\%ecx}  & \tt{\%cx}  & \tt{\%cl} \\ \hline
+    5th arg & \tt{\%r8}  & \tt{\%r8d}  & \tt{\%r8w}  & \tt{\%r8b} \\ \hline
+    6th arg & \tt{\%r9}  & \tt{\%r9d}  & \tt{\%r9w}  & \tt{\%r9b} \\ \hline
+    Callee & \tt{\%rbp}  & \tt{\%ebp}  & \tt{\%bp}  & \tt{\%bpl} \\ \hline
+    Stack ptr & \tt{\%rsp}  & \tt{\%esp}  & \tt{\%sp}  & \tt{\%spl} \\ \hline
+    Caller & \tt{\%r10}  & \tt{\%r10d}  & \tt{\%r10w}  & \tt{\%r10b} \\ \hline
+    Caller & \tt{\%r11}  & \tt{\%r11d}  & \tt{\%r11w}  & \tt{\%r11b} \\ \hline
+    Callee & \tt{\%r12}  & \tt{\%r12d}  & \tt{\%r12w}  & \tt{\%r12b} \\ \hline
+    Callee & \tt{\%r13}  & \tt{\%r13d}  & \tt{\%r13w}  & \tt{\%r13b} \\ \hline
+    Callee & \tt{\%r14}  & \tt{\%r14d}  & \tt{\%r14w}  & \tt{\%r14b} \\ \hline
+    Callee & \tt{\%r15}  & \tt{\%r15d}  & \tt{\%r15w}  & \tt{\%r15b} \\ \hline
+\end{tabular}
+
+\end{document}
