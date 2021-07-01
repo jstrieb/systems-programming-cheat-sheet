@@ -315,7 +315,7 @@
     \item \texttt{exit(int status)} -- called once, never returns
     \item \texttt{fork(void)} -- \texttt{pid\_t} of child in parent or 0 if in child; called once, returns twice
     \item Open file table and vnode table are managed by OS and shared across processes, file descriptor table is process-specific
-    \item \texttt{waidpid(pid\_t pid, int *statusp, int options)} -- returns \texttt{pid\_t} of child, 0 if not waiting (\texttt{WNOHANG}) or error
+    \item \texttt{waitpid(pid\_t pid, int *statusp, int options)} -- returns \texttt{pid\_t} of child, 0 if not waiting (\texttt{WNOHANG}) or error
     \begin{itemize}[noitemsep]
         \item \texttt{WNOHANG} -- return (0) immediately and don't wait for child
         \item \texttt{WUNTRACED} -- check for terminated and stop children
