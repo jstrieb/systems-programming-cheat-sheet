@@ -167,13 +167,14 @@
         \item \tt{XXXX} -- Sticky bit; OR of remaining bits
         \item Round up conditions:
         \begin{itemize}[noitemsep]
-            \item Round = 1, Sticky = 1 $\to > 0.5$
+            \item Round = 1, Sticky = 1 $\to\  > 0.5$
             \item Guard = 1, Round = 1, Sticky = 0 $\to$ Round to even
         \end{itemize}
     \end{itemize}
     \item Multiplication
     \begin{itemize}[noitemsep]
-        \item $(-1)^{s_1}M_12^{E_1} \times (-1)^{s_2}M_22^{E_2} = (-1)^{s_1 \string^ s_2}(M_1 \times M_2)2^{E_1 + E_2}$
+        \item $(-1)^{s_1}M_12^{E_1} \times (-1)^{s_2}M_22^{E_2}$ \\
+              \null \qquad \qquad \qquad \qquad $= (-1)^{s_1 \string^ s_2}(M_1 \times M_2)2^{E_1 + E_2}$
         \item If $M_1 \times M_2 = M \geq 2$ shift $M$ right, increment $E = E_1 + E_2$
         \item If $E$ out of range, overflow
         \item Round $M$ to fit \tt{frac} precision
