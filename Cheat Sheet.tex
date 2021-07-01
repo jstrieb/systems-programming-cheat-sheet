@@ -309,27 +309,27 @@
 
 \section{Processes}
 \begin{itemize}[noitemsep]
-    \item \texttt{getpid(void)} -- \texttt{pid\_t} of the process
-    \item \texttt{getppid(void)} -- \texttt{pid\_t} of the parent process
+    \item \tt{getpid(void)} -- \tt{pid\_t} of the process
+    \item \tt{getppid(void)} -- \tt{pid\_t} of the parent process
     \item Processes are running, stopped, or terminated
-    \item \texttt{exit(int status)} -- called once, never returns
-    \item \texttt{fork(void)} -- \texttt{pid\_t} of child in parent or 0 if in child; called once, returns twice
+    \item \tt{exit(int status)} -- called once, never returns
+    \item \tt{fork(void)} -- \tt{pid\_t} of child in parent or 0 if in child; called once, returns twice
     \item Open file table and vnode table are managed by OS and shared across processes, file descriptor table is process-specific
-    \item \texttt{waitpid(pid\_t pid, int *statusp, int options)} -- returns \texttt{pid\_t} of child, 0 if not waiting (\texttt{WNOHANG}) or error
+    \item \tt{waitpid(pid\_t pid, int *statusp, int options)} -- returns \tt{pid\_t} of child, 0 if not waiting (\tt{WNOHANG}) or error
     \begin{itemize}[noitemsep]
-        \item \texttt{WNOHANG} -- return (0) immediately and don't wait for child
-        \item \texttt{WUNTRACED} -- check for terminated and stop children
-        \item \texttt{WCONTINUED} -- check for waiting (child) process to be continued
-        \item OR (\texttt{|}) flags together to form a bit vector
-        \item \texttt{WIFEXITED(status)} -- whether child exited normally
-        \item \texttt{WEXITSTATUS(status)} -- returns exit status of terminated child if \texttt{WIFEXITED} is true
-        \item \texttt{WIFSIGNALED \& WTERMSIG} -- as above but for signals
-        \item \texttt{WIFSTOPPED \& WSTOPSIG \& WIFCONTINUED} -- as above for stopped/continued processes
+        \item \tt{WNOHANG} -- return (0) immediately and don't wait for child
+        \item \tt{WUNTRACED} -- check for terminated and stop children
+        \item \tt{WCONTINUED} -- check for waiting (child) process to be continued
+        \item OR (\tt{|}) flags together to form a bit vector
+        \item \tt{WIFEXITED(status)} -- whether child exited normally
+        \item \tt{WEXITSTATUS(status)} -- returns exit status of terminated child if \tt{WIFEXITED} is true
+        \item \tt{WIFSIGNALED \& WTERMSIG} -- as above but for signals
+        \item \tt{WIFSTOPPED \& WSTOPSIG \& WIFCONTINUED} -- as above for stopped/continued processes
     \end{itemize}
-    \item \texttt{wait(int *statusp)} $\cong$ \texttt{waitpid(-1, \&status, 0)}
-    \item \texttt{sleep(unsigned int secs)} -- returns short counts
-    \item \texttt{pause(void)} -- sleeps until a signal is received
-    \item \texttt{execve(char *filename, char *argv[], char *envp[])} -- does not return unless error; last arg in each array is \texttt{NULL}
+    \item \tt{wait(int *statusp)} $\cong$ \tt{waitpid(-1, \&status, 0)}
+    \item \tt{sleep(unsigned int secs)} -- returns short counts
+    \item \tt{pause(void)} -- sleeps until a signal is received
+    \item \tt{execve(char *filename, char *argv[], char *envp[])} -- does not return unless error; last arg in each array is \tt{NULL}
 \end{itemize}
 
 \section{Virtual Memory}
@@ -355,49 +355,49 @@
 
 \section{Dynamic Memory Allocation}
 \begin{itemize}[noitemsep]
-\item \texttt{sbrk(intptr\_t incr)} -- extend the heap by \texttt{incr} (basically just an \texttt{int}) and return the old break pointer
+\item \tt{sbrk(intptr\_t incr)} -- extend the heap by \tt{incr} (basically just an \tt{int}) and return the old break pointer
 \end{itemize}
 
 \vfill
 
 \section{Signals}
 \begin{itemize}[noitemsep]
-    \item Default action of \texttt{SIGCHLD, SIGCONT, SIGSTOP, SIGTSTP} is to ignore and stop (respectively per pair)
-    \item Signals can be sent to process groups; child inherits parent process group by default; \texttt{setpgid(0, 0)} sets the process group ID to the current process id
-    \item \texttt{kill(pid\_t pid, int sig)} -- send a \texttt{sig} to \texttt{pid}, unless \texttt{pid} is 0 then send it to every process in the process group of the calling process; if \texttt{pid} $< 0$, send to every process in process group $|$\texttt{pid}$|$
-    \item \texttt{signal(int sig, void *hndlr\_t (int) handler)} -- handle \texttt{sig} with \texttt{handler} function pointer; \texttt{handler} can be \texttt{SIG\_IGN} to ignore or  \texttt{SIG\_DFL} for default
-    \item \texttt{sigprocmask(int how, sigset\_t *set, sigset\_t *oldset)}
+    \item Default action of \tt{SIGCHLD, SIGCONT, SIGSTOP, SIGTSTP} is to ignore and stop (respectively per pair)
+    \item Signals can be sent to process groups; child inherits parent process group by default; \tt{setpgid(0, 0)} sets the process group ID to the current process id
+    \item \tt{kill(pid\_t pid, int sig)} -- send a \tt{sig} to \tt{pid}, unless \tt{pid} is 0 then send it to every process in the process group of the calling process; if \tt{pid} $< 0$, send to every process in process group $|$\tt{pid}$|$
+    \item \tt{signal(int sig, void *hndlr\_t (int) handler)} -- handle \tt{sig} with \tt{handler} function pointer; \tt{handler} can be \tt{SIG\_IGN} to ignore or  \tt{SIG\_DFL} for default
+    \item \tt{sigprocmask(int how, sigset\_t *set, sigset\_t *oldset)}
     \begin{itemize}[noitemsep]
-        \item \texttt{SIG\_BLOCK} -- \texttt{blocked = blocked | set}
-        \item \texttt{SIG\_UNBLOCK} -- \texttt{blocked = blocked \& ~set}
-        \item \texttt{SIG\_SETMASK} -- \texttt{blocked = set}
-        \item Old bit vector stored in \texttt{oldset} (a.k.a. \texttt{prev})
+        \item \tt{SIG\_BLOCK} -- \tt{blocked = blocked | set}
+        \item \tt{SIG\_UNBLOCK} -- \tt{blocked = blocked \& ~set}
+        \item \tt{SIG\_SETMASK} -- \tt{blocked = set}
+        \item Old bit vector stored in \tt{oldset} (a.k.a. \tt{prev})
     \end{itemize}
-    \item \texttt{sigemptyset(sigset\_t *set)}
-    \item \texttt{sigfillset(sigset\_t *set)}
-    \item \texttt{sigaddset(sigset\_t *set, int sig)} -- add \texttt{sig}
-    \item \texttt{sigdelset(sigset\_t *set, int sig)} -- delete \texttt{sig}
+    \item \tt{sigemptyset(sigset\_t *set)}
+    \item \tt{sigfillset(sigset\_t *set)}
+    \item \tt{sigaddset(sigset\_t *set, int sig)} -- add \tt{sig}
+    \item \tt{sigdelset(sigset\_t *set, int sig)} -- delete \tt{sig}
     \item Rules for signal handlers
     \begin{enumerate}
         \item Keep them simple
         \item Only call async-signal-safe functions (reentrant or uninterruptible)
-        \item Save and restore \texttt{errno}
+        \item Save and restore \tt{errno}
         \item Block all signals
-        \item Declare global variables with \texttt{volatile} -- force memory read each time (no storage in registers)
-        \item Declare flags with \texttt{sig\_atomic\_t} -- atomic r/w
+        \item Declare global variables with \tt{volatile} -- force memory read each time (no storage in registers)
+        \item Declare flags with \tt{sig\_atomic\_t} -- atomic r/w
     \end{enumerate}
     \item Signals are \textbf{not} queued
-    \item \texttt{sigsuspend(sigset\_t *mask)} -- atomically replace \texttt{blocked} with \texttt{mask} and suspend until handler returns after receipt of a signal, then restore \texttt{blocked}
+    \item \tt{sigsuspend(sigset\_t *mask)} -- atomically replace \tt{blocked} with \tt{mask} and suspend until handler returns after receipt of a signal, then restore \tt{blocked}
 \end{itemize}
 
 \section{Concurrency with Threads}
 \begin{itemize}[noitemsep]
-\item \texttt{pthread\_create(pthread\_t *tid, NULL, void *func(void *), void *arg)} -- run \texttt{func} with \texttt{arg} in a new thread, joinable by default
-\item \texttt{pthread\_self(void)} -- return current thread id
-\item \texttt{pthread\_exit(void *return)} -- exit the current thread
-\item \texttt{pthread\_cancel(pthread\_t tid)} -- terminate another thread without waiting
-\item \texttt{pthread\_join(pthread\_t tid, NULL)} -- block and wait for the thread with \texttt{tid} to terminate
-\item \texttt{pthread\_detach(pthread\_t tid)} -- make thread \texttt{tid} detached (not joinable), often called on self
+\item \tt{pthread\_create(pthread\_t *tid, NULL, void *func(void *), void *arg)} -- run \tt{func} with \tt{arg} in a new thread, joinable by default
+\item \tt{pthread\_self(void)} -- return current thread id
+\item \tt{pthread\_exit(void *return)} -- exit the current thread
+\item \tt{pthread\_cancel(pthread\_t tid)} -- terminate another thread without waiting
+\item \tt{pthread\_join(pthread\_t tid, NULL)} -- block and wait for the thread with \tt{tid} to terminate
+\item \tt{pthread\_detach(pthread\_t tid)} -- make thread \tt{tid} detached (not joinable), often called on self
 \item Threads share everything in memory except for registers and stack, though they can access addresses in other thread stacks
 \end{itemize}
 
@@ -405,29 +405,29 @@
 
 \section{System I/O}
 \begin{itemize}[noitemsep]
-    \item \texttt{open(char *filename, int flags, mode\_t mode)} -- returns file descriptor
+    \item \tt{open(char *filename, int flags, mode\_t mode)} -- returns file descriptor
     \begin{itemize}[noitemsep]
-        \item \texttt{O\_RDONLY}, \texttt{O\_WRDONLY}, \texttt{O\_RDWR} flags
-        \item \texttt{O\_CREAT} -- create a new file if it doesn't exist
-        \item \texttt{O\_TRUNC} -- truncate the file if it exists
-        \item \texttt{O\_APPEND} -- before write, set file pos. to end of file
-        \item Mode given by OR ($|$) combination of \\ \texttt{S\_I\{R, W, X\}\{USR, GRP, OTH\}}
+        \item \tt{O\_RDONLY}, \tt{O\_WRDONLY}, \tt{O\_RDWR} flags
+        \item \tt{O\_CREAT} -- create a new file if it doesn't exist
+        \item \tt{O\_TRUNC} -- truncate the file if it exists
+        \item \tt{O\_APPEND} -- before write, set file pos. to end of file
+        \item Mode given by OR ($|$) combination of \\ \tt{S\_I\{R, W, X\}\{USR, GRP, OTH\}}
         \item Each call creates new open file table entry
     \end{itemize}
-    \item \texttt{read(int fd, void *buf, size\_t n)} -- read up to \texttt{n} bytes into \texttt{buf} and return the number of bytes actually read, update file descriptor table position by return value
-    \item \texttt{write(int fd, void *buf, size\_t n)} -- write up to \texttt{n} bytes from \texttt{buf}, return the number of bytes actually written, update file descriptor table position by return value
+    \item \tt{read(int fd, void *buf, size\_t n)} -- read up to \tt{n} bytes into \tt{buf} and return the number of bytes actually read, update file descriptor table position by return value
+    \item \tt{write(int fd, void *buf, size\_t n)} -- write up to \tt{n} bytes from \tt{buf}, return the number of bytes actually written, update file descriptor table position by return value
     \item Each process has unique descriptor table pointing to entries in global file table
     \item OS maintains open file table shared by all processes, each entry has file position, ref count, and pointer to v-node table
     \item OS maintains v-node table with information about each file
     \item Parent and child process must both close file descriptors for kernel to remove file table entry
-    \item \texttt{dup2(int oldfd, int newfd)} -- copies descriptor entry \texttt{oldfd} to \texttt{newfd}, overwriting \texttt{newfd} (closes \texttt{newfd} if open); \textit{i.e.}, \texttt{newfd} entry points to \texttt{oldfd} entry
+    \item \tt{dup2(int oldfd, int newfd)} -- copies descriptor entry \tt{oldfd} to \tt{newfd}, overwriting \tt{newfd} (closes \tt{newfd} if open); \textit{i.e.}, \tt{newfd} entry points to \tt{oldfd} entry
 \end{itemize}
 
 \section{Thread Synchronization}
 \begin{itemize}[noitemsep]
-    \item \texttt{sem\_init(sem\_t *sem, 0, int val)} -- initialize lock
-    \item \texttt{sem\_wait(sem\_t *sem)} -- \texttt{P(sem)}; block until get lock
-    \item \texttt{sem\_post(sem\_t *sem)} -- \texttt{V(sem)}; release lock
+    \item \tt{sem\_init(sem\_t *sem, 0, int val)} -- initialize lock
+    \item \tt{sem\_wait(sem\_t *sem)} -- \tt{P(sem)}; block until get lock
+    \item \tt{sem\_post(sem\_t *sem)} -- \tt{V(sem)}; release lock
     \item In producer-consumer solution, producer produces whenever there is space in buffer, and consumer consumes whatever is there as fast as it can
     \item First readers-writers problem favors readers
     \item Second readers-writers problem favors writers
@@ -437,11 +437,11 @@
 
 \section{Network Programming}
 \begin{itemize}[noitemsep]
-    \item \texttt{socket(int domain, int type, int protocol)} -- usually \texttt{AF\_INET, SOCK\_STREAM, 0}, respectively; create endpoint of connection
-    \item \texttt{connect(int clientfd, struct sockadd *addr, socklen\_t addrlen)} -- establish connection with a server at \texttt{addr} (client)
-    \item \texttt{bind(int sockfd, struct sockaddr *adrr, socklen\_t addrlen)} -- associate server socket address with given socket descriptor (server)
-    \item \texttt{listen(int sockfd, int backlog)} -- set \texttt{sockfd} to actively listen (server)
-    \item \texttt{accept(int listenfd, struct sockaddr *addr, int *addrlen)} -- block until a connection is made then return file descriptor for connection
+    \item \tt{socket(int domain, int type, int protocol)} -- usually \tt{AF\_INET, SOCK\_STREAM, 0}, respectively; create endpoint of connection
+    \item \tt{connect(int clientfd, struct sockadd *addr, socklen\_t addrlen)} -- establish connection with a server at \tt{addr} (client)
+    \item \tt{bind(int sockfd, struct sockaddr *adrr, socklen\_t addrlen)} -- associate server socket address with given socket descriptor (server)
+    \item \tt{listen(int sockfd, int backlog)} -- set \tt{sockfd} to actively listen (server)
+    \item \tt{accept(int listenfd, struct sockaddr *addr, int *addrlen)} -- block until a connection is made then return file descriptor for connection
 \end{itemize}
 
 \vfill
@@ -453,7 +453,7 @@ Scratch work:
 \begin{center}
   Created for 15-213 at Carnegie Mellon University \\
   in Spring 2019 by Jacob Strieb. \\
-  \href{mailto:jstrieb@alumni.cmu.edu}{\texttt{jstrieb@alumni.cmu.edu}} \\
+  \href{mailto:jstrieb@alumni.cmu.edu}{\tt{jstrieb@alumni.cmu.edu}} \\
   \url{https://git.io/JcZ29}
 \end{center}
 
