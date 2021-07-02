@@ -75,5 +75,7 @@ Recompile with `make`.
 
 - The entire (Spring 2019) 15-213 course staff
 - Randy Bryant and David O'Hallaron for their excellent textbook
-- Kirubel Aklilu and Matt Henderson for studying with me when we all took 213
+- [Kirubel Aklilu](https://github.com/kirubelaklilu1), Matt Henderson, and
+  [Hrishikesh Bodas](https://github.com/hbodas) for studying with me when we
+  all took 213
 - Anyone who has taken the time to read the cheat sheet and report errors
